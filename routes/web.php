@@ -13,11 +13,11 @@
 use Illuminate\Http\Request;
 use Syntax\SteamApi\Steam\News;
 use Syntax\SteamApi\Steam\App;
-use Syntax\SteamApi\Client;
+use \Syntax\SteamApi\Steam\Player;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 Route::get('/news', function (Request $request) {
   $news = new News();
@@ -29,16 +29,27 @@ Route::get('/news', function (Request $request) {
   ]);
 });
 
-Route::get('/app-news', function (Request $request) {
-  $client = new Client();
-  print_r($client);
+Route::any('/', function (Request $request) {
+  $appName = $request->name;
   $news = new News();
   $app_object = new App();
   $apps_array = $app_object->GetAppList();
-  print_r($app_object->appDetails(261550));
-  print_r($apps_array[array_search('test3', array_column($apps_array, 'name'))]);
-  return view('index', [
-    'news' => $news->GetNewsForApp(261550, 15)->newsitems,
-    'apps_array' => $apps_array,
-  ]);
+  $app_object = new App();
+  if ($appName) {
+    $app_id = $apps_array[array_search($appName, array_column($apps_array, 'name'))]->appid;
+    $app_details = $app_object->appDetails($app_id, 'us');
+    return view('index', [
+      'app_details' => $app_details,
+      'news' => $news->GetNewsForApp($app_id, 15)->newsitems,
+    ]);
+  }
+  else {
+    return view('index', [
+    ]);
+  }
+});
+
+Route::any('/get-player', function (Request $request) {
+  $player_name_or_id = $request->name;
+  $player = new Player();
 });

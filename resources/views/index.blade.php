@@ -3,12 +3,12 @@
 @section('content')
     <div class="panel-body">
         <!--собакаinclude('common.errors')-->
-        <form action="{{ url('app-news') }}" method="GET" class="form-horizontal">
+        <form action="{{ url('/') }}" method="POST" class="form-horizontal">
         {{ csrf_field() }}
 
-        <!-- Task Name -->
+        <!-- App Name -->
             <div class="form-group">
-                <label for="app-name" class="col-sm-3 control-label">Application</label>
+                <label for="app-name" class="col-sm-3 control-label">Enter Application Name</label>
                 <div class="col-sm-6">
                     <input type="text" name="name" id="app-name" class="form-control">
                 </div>
@@ -24,20 +24,23 @@
             </div>
         </form>
     </div>
-    @if (count($apps_array) > 0)
+    @if (isset($app_details))
     <div class="steam-response">
-        {{--@foreach ($news as $news_item)
-            <div class="news-item">
-                <div class="news-title">{{ $news_item->title }}</div>
-                <div class="news-body" style="border-bottom: solid black 1px;">{{ $news_item->contents }}</div>
+        <div class="news-item">
+            <h2 class="app-name">{{ $app_details->name[0] }}</h2>
+            <div class="app-description">{!! $app_details->description[0] !!}</div>
+            <div class="app-requirements">
+                <div class="app-min-requirements">{!! $app_details->pcRequirements->minimum[0] !!}</div>
             </div>
-        @endforeach--}}
-{{--            @foreach ($apps_array as $app)--}}
-{{--                <div class="news-item">--}}
-{{--                    <div class="news-title">{{ $app->appid }}</div>--}}
-{{--                    <div class="news-body" style="border-bottom: solid black 1px;">{{ $app->name }}</div>--}}
-{{--                </div>--}}
-{{--            @endforeach--}}
+            <div class="app-price">{!! $app_details->price->initial_formatted[0] !!}</div>
+        </div>
+        @foreach ($news as $news_item)
+            <div class="news-item">
+                <div class="news-title">{!! $news_item->title !!}</div>
+                <div class="news-body">{!! $news_item->contents !!}</div>
+            </div>
+        @endforeach
     </div>
     @endif
+    <a class="go-to-player-search" href="/">Player Info page</a>
 @endsection
